@@ -1,0 +1,1343 @@
+﻿<html>
+<head>
+<title>A Tutorial on MultiThreaded Client Server II</title>
+
+<META NAME="description" CONTENT="This tutorial shows how to build a simple multiThreaded Client Server II application.">
+
+<meta NAME="keywords" CONTENT="total application works, Basic Multithreaded Client/Server, Client-Server, Basic thread, thread, simple thread, threadlife cycle, Basic applet, applet, simple applet">
+<meta name="title" content="A Tutorial on MultiThreaded Client Server II - java, javscript">
+<meta NAME="Copyright" CONTENT="Copyright 2007, Total Application Works">
+<meta NAME="Creator" CONTENT="Total Application Works">
+<meta NAME="Publisher" CONTENT="Total Application Works">
+<meta NAME="Distribution" CONTENT="Global">
+<meta NAME="Rating" CONTENT="General">
+
+
+          <meta NAME="revisit-after" content=" 7 days">    
+
+</head>
+<body>
+<font size=4>
+<hr>
+<center><font color=blue size=5><b>Tutorial: How to Create a Basic Multithreaded Client/Server Application II</b> </font> 
+<br>
+
+          <br> <center> 
+          <img src="indexHWS_files/bludiv4684.html" width="600" height="5">
+
+           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+
+<br> <br><font size="5">To visit my site</font> <br> <br>
+
+[<a href="http://sumtotalz.com/TotalAppsWorks/index.html">HOME</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/consulting.html">Consulting</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/design.html">Design</a>]
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/Maintenance.html">Maintenance</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/project.html">Project</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/testing.html">Testing</a>] [<a href="http://sumtotalz.com/training.html">Training</a>] [<a href="http://sumtotalz.com/turnkey.html">Turnkey</a>] 
+                  [<a href="http://sumtotalz.com/TotalAppsWorks/java.html">Java</a>]</font></p>
+
+<br> <br><a href="http://sumtotalz.com/TotalAppsWorks/contact.html"><font size="4">To contact us</font></a>  <br><br>
+
+           <p><font color="black" size="2" face="Arial, Helvetica, sans-serif">© 2002 - 2007 All 
+                Rights Reserved<b><i> Total Application Works </i></b></font></p> </center> 
+
+</center>
+<hr>
+<hr>
+<ul>
+<li>Tell a friend about this site (copy and paste the following HTML page into a file or send this page to a friend.)
+<table border>
+
+<tr align=left>
+<th> &lt;html> <br>
+&lt;title>Example of a link &lt;/title> <br>
+&lt;body> <br>
+&lt;table border> <br>
+&lt;a href="http://http://www.sumtotalz.com/TotalAppsWorks/MT_C_S_Tutorial_II.html"> <br>MultithreadedClient Server Tutorial II &lt;/a>  <br>
+
+&lt;/table>  <br>
+&lt;/body>  <br>
+&lt;/html> </th>
+</tr>
+<tr>
+<th><a href="http://www.sumtotalz.com/TotalAppsWorks/Basic_MT_C_S_II.zip"> Source </a> </th>
+</tr>
+<tr>
+<th><a href="http://www.sumtotalz.com/TotalAppsWorks/sockets_MT_C_S_II.JPG"> Screenshot </a> </th>
+
+</tr>
+
+</table>
+<li> On-site classes can be arranged in Java and C++. Send all inquiries to:
+<table border>
+<tr>
+<th>RonHolland@sumtotalz.com</th>
+</tr>
+</table> <br> <br>
+<li><a href="#INTRO"> Introduction </a>  
+<li><a href="#REQ"> Requirements </a>  
+<li><a href="#SETUP"> What is the purpose of the setup() method?  </a>
+<li><a href="#PIAT">Putting it all together</a>
+<li><a href="#RMM">RunServer() and run() Method modifications </a>
+<li><a href="#SOTSM">Summary of tcpServer Methods </a>
+<li><a href="#OOTM">Outline of tcpClient Methods</a>
+<li><a href="#SOTM">Summary of tcpClient Methods</a>
+<li><a href="#DEF">Definitions</a>
+</ul>   
+<h3><a name="INTRO"> Introduction </a> </h3>
+<p>The purpose of the tutorial is to show you how to build a multithreaded client server application that responds to requests from clients that use either <a href="#TCP"><b>TCP/IP</b></a> or <a href="#HTTP"><b>HTTP</b></a> protocols. 
+Normally, <b>TCP/IP</b> is used with applications (programs with a main() method) and <b>HTTP</b> is used in calls from browsers. This tutorial shows you how to build a <i>poor man's modified <a href="#APT"><b>Tomcat</b></a></i>. You might call it a student's version of <b>Tomcat</b>.
+The server we will build will not come close to having the functionality of <b>Tomcat</b>; however, it will help you start developing the theory behind the more complex servers.
+This tutorial assumes that you have read and completed the following tutorials.
+<ol>
+<li><a href="http://sumtotalz.com/TotalAppsWorks/MT_C_S_Tutorial.html">A Tutorial on MultiThreaded Client Server </a>
+<li><a href="http://sumtotalz.com/TotalAppsWorks/Sockets_Tutorial_II.html"> Building a Basic Client/Server Application II </a>
+</ol>
+In this tutorial, we will merge the <i>Building a Basic Client/Server Application II</i> and the <i>MultiThreaded Client Server</i> into the <b>Multithreaded Basic Client/Server Application II</b>.
+We will not repeat the material covered in the previous tutorials <b>1</b> and <b>2</b> above. In this tutorial, we will show you how to increase the functionality of the server from the previous <b>MultiThreaded Client Server</b> tutorial.
+We will not modify the <b>Client</b> from the previous tutorial in any way. All of our work in this tutorial will be in the <b><i>tcpServer</i></b> found in the <i>Basic Client/Server Application II</i> tutorial.
+</p>
+<h3><font size="4"><a name="REQ"> Requirements  </a></font></h3>
+<p>The requirements for this project are to:
+<ol>
+<li>Use the application we developed in the tutorial, <b>"Basic Client/Server Application II"</b> as the basis for our multithreaded client/server II application.
+<li>The server's <b>GUI</b> will remain the same. The <b>GUI</b> will have the following:
+<ol>
+<li><b>ContentPane</b> 
+<li><b>JButton</b> 
+<li><b>JPanel</b> 
+<li><b>BorderLayout Manager</b> 
+<li><b>ActionListener</b> 
+<li><b>JTextArea</b> 
+<li><b>JScrollPane</b> 
+</ol>
+<li>Use a <b>setup()</b> method for initialization. Realize that since the <b>GUI</b> is not changing in this example, the work in the <b>setup()</b> method is already done. We will use this method to reinforce the theory behind the
+<b>Holland's OOP Programming Design Model</b>. We will simply redirect the logic flow.
+<li>Use <b>Holland's OOP Programming Design Model</b> to do the modification on the <b>tcpServer</b> class. 
+<li>The Basic Client/Server Application client-server structure that we are working from looks like:
+<br> <br>
+<table border>
+<tr>
+<th bgcolor=lightyellow>Basic Two-Tier Client/Server Application Structure</th>
+</tr>
+<tr>
+<td>
+<pre> <b> <font color=blue>
+
+                               Java  
+                               API
+                             +------+
+                             |TCP/IP| 
+                             +---+--+
+                                 |
+  tcpClient               +---+  |  +---+        tcpServer
+  Methods                 | S |  |  | S |        Methods
+ +-------------------+    | o |  |  | o |    +-------------------+
+ | tcpClient()       |<font color=red><--></font>| c |  |  | c |<font color=red><--></font>| tcpServer()       |
+ +-------------------+    | k |  v  | k |    +-------------------+
+ | setUp()           |    | e |<font color=red><---></font>| e |    | setup()           |
+ +-------------------+    | t |     | t |    +-------------------+
+ | connect()         |    +---+     +---+    | RunClient()       |
+ +-------------------+                       +-------------------+ 
+ | RunServer()       |                       | closeConnection() | 
+ +-------------------+                       +-------------------+ 
+ | closeConnection() |                       | connect()         | 
+ +-------------------+                       +-------------------+
+ | main()            |                       | main()            |                            
+ +-------------------+                       +-------------------+
+
+</font> </b> </pre>
+</td>
+</tr>
+<tr>
+<th>Figure 1: <a href="#TWOT">Two-tier application </a></th>
+</tr>
+</table> <br> <br>
+<li>Add an inner <b>MyThread</b> class to the <b>tcpServer</b> class.
+<li>Add capabilities to respond to the following <b>HTML</b> pages:
+<ol>
+<li><b>Helloworld</b>
+<li><b>HTTPGetServlet</b>
+<li><b>HTTPGetNames</b>
+</ol>
+<li>The process for responding to the browser client should resemble the following:
+<br> <br>
+<table border>
+<tr>
+<th bgcolor=lightyellow>Server-Browser Request/Response</th>
+</tr>
+<tr>
+<td>
+<pre> <b> <font color=blue>
+       +-----------------+        +-----------------+
+       | Browser: Client |------->|     Server      |   
+       +-----+-----------+        +--------+--------+
+             ^                             |
+             |                             |
+             |                       +-----+--------+
+             |                       |Filter Request|
+             |                       +-----+--------+
+             |                             |
+             |                             |
+             |                       +-----+--------+
+             |                       |  Respond to  |
+             |                       |    Request   |
+             |                       +-----+--------+
+             |                             |
+       +-----+--------+                    |
+       | Send Page to |<-------------------+                   
+       |   Browser    |
+       +--------------+                                         
+                                         
+</font> </b> </pre>
+</td>
+</tr>
+<tr>
+<th>Figure 2: Architecture of Browser Request/Response </th>
+</tr>
+</table> <br> <br>
+</ol>
+Why do we use the setup() method? We will discuss this in the next section.
+</p>
+</p>
+<h3><a name="SETUP">What is the purpose of the setup() method?  </a></h3>
+<p>The purpose of the <b>setup()</b> method is for initialization. In the <b>tcpServer</b> application, its purpose is to create any <b>GUI</b> that is displayed
+on the main frame. Remember, we are not changing the <b>tcpServer GUI</b>, so we already have some insights on the data and the behavior of the <b>setup()</b> method on this data.
+The data that the <b>setup()</b> method will work on is:
+<ol>
+<li><b>Container c = getContentPane();</b>
+<ul>
+</ul>
+<li><b>JButton exit = new JButton( "Exit" );</b>
+<ul>
+This is an implementation of a "push" button. <br>
+<table border>
+<tr>
+<th bgcolor=red><font color=white>Exit </font> </th>
+</tr>
+</table>
+</ul>
+<li><b>JPanel buttonPanel = new JPanel() ;</b>
+<ul>
+JPanel is a generic lightweight container on which we will place the <b>Exit</b> button.
+</ul>
+<li><b>Thread thrd = new Thread[ 15 ] ;</b>
+<ul>
+</ul>
+<li><b>JTextArea display = new JTextArea();</b>
+<ul>
+</ul></ol>
+In the above <b>Figure 1</b>, it appears that all of the initialization code is done in the constructor. For ease of readability and maintainability, I prefer to spread the initialization using finer logical units. With this thought in mind,
+the tcpServer() constructor's logic could look like:
+<ol>
+<li><b>Setup()</b>
+<ol>
+<li><b>SetupMenu()</b>
+<li><b>SetupToolbar()</b>
+<li><b>SetupPanels()</b>
+<li><b>SetupArrays()</b>
+<li><b>SetupButtons()</b>
+<li><b>startThreads()</b>
+<li><b>show()</b> - Makes the JFrame visible
+</ol>
+</ol>
+The above logic takes place in the <b>tcpServer()</b> constructor's. Instead of placing all of the initialization in the constructor, we have already performed several passes of step-wise refinement. If we had a:
+<ol>
+<li>General initialization
+<li>Menu
+<li>Toolbar
+<li>Multiple panels
+<li>Multiple arrays
+<li>Many buttons
+<li>Multiple threads
+</ol>
+the outline/template would look like:
+<br> <br>  
+<table border>
+<tr bgcolor=lightyellow>
+<th>tcpServer() Class  </th>
+</tr>
+<tr>
+<td> <pre> <b> <font color=blue size=4>
+public class tcpServer() {
+   public tcpServer() {
+
+      c = getContentPane() ;
+
+      Setup() ;
+
+      show() ;
+
+   }
+   private void Setup()  {   
+
+      SetupMenu() ;
+
+      SetupToolbar() ;
+
+      SetupPanels() ;
+
+      SetupArrays() ;
+
+      SetupButtons() ;
+
+      startThreads() ;
+
+   }
+   private void SetupMenu() {
+      ...
+   }
+   private void SetupToolbar()  {
+      ...
+   }
+   private void SetupPanels()  {
+     ...
+   }
+   private SetupArrays()  {
+      ...
+   }
+   private void SetupButtons()  {
+      ...
+   }
+   private void startThreads() {
+      ...
+   }
+   public static void main(String[] args) {
+      ...
+   }
+}
+</font> </b> </pre> </td>
+</tr>
+<tr>
+<th>Figure 3: setup() methods </th>
+</tr>
+</table> <br> <br>
+<b> <font color=red>What just happened?</font></b> The initialization that normally might have been performed in the constructor and the setup() method was broken down into the above methods found in <b>Figure 3</b>. This process is known as <a href="#TDP
+">topdown programming</a>. What I have done is take a unit (tcpServer() constructor), and I have broken it down into finer units.
+It is like taking a dime and turning it into ten pennies. The pennies are still worth ten cents, which is the same value of a dime. 
+Even though I do this replacement in the context of the original <b>constructor/Setup()</b> method, this finer
+granularity makes it easier to see what I have done and what needs to be done. What we have done is break down the original constructor/setup() method into methods to handle specific tasks. As you do this <a href="#SWR">stepwise refinement programming</a>, don't be afraid to prototype what you are doing. The prototype allows you to evaluate your design, as you progress. Leonardo da Vinci probably evaluated the Mona Lisa as the painting progressed
+instead of waiting to the end. You don't want to wait to the end to find out what you are building doesn't work or is not what the customer wants. This process also allows you to test each method as you fill in the code. Don't wait until all of the code has been completed before starting  the testing. I have seen projects fail because the integration of all of the 
+code at the last minute was overwhelming.</p>
+<p>In <i>object-oriented</i> programming, programming revolves around the data. So in this style, the top is the data. It might be depicted as follows:
+<br> <br>
+<table border>
+<tr bgcolor=lightyellow>
+<th><a name="HOPDM">Holland's OOP Programming Design Model  </a></th>
+</tr>
+<tr>
+<td>
+<pre> <b> <font color=blue>
+          +--------------+
+          |      Data    |<----+  
+          +-------+------+     | 
+                  ^            |
+                  |----------->+
+                  V            ^
+          +-------+------+     |
+          |   Top-down   |     | 
+          |  Structured  |<----+
+          |  programming |     |
+          |  on Classes  |     | (step-wise)
+          |  and methods |     | (refinement)
+          +--------------+     | (as needed) 
+                  |            |
+                  +------------+ 
+ 
+</font> </b> </pre>
+</td>
+</tr>
+<tr>
+<th>Figure 4: </th>
+</tr>
+</table>
+</p>
+<h3><a name="PIAT">Putting it all together </a> </h3>
+<p>How do we put it all together?
+<ol>
+<li>We will use the <i>tcpServer class</i> in the <b> Building a Basic Client/Server Application II</b> tutorial as our starting point.
+<li>Define the <b>setup()</b> method for initialization.
+<pre> <b> <font color=blue>
+public  void setup() {
+   c = getContentPane();
+
+   setUpButtons() ;
+
+   setUpPanels() ;
+
+   setUpTextArea() ;
+
+   setSize( 400, 400 );
+   setLocation( 10, 20 ) ;
+   show();
+}
+</font> </b> </pre> </td>
+<li>Define the exit push button.
+<pre> <b> <font color=blue>
+public  void setUpButtons() {
+   exit = new JButton( "Exit" );
+   exit.setBackground( Color.red ) ;
+   exit.setForeground( Color.white ) ;
+
+   exit.addActionListener( this );
+}
+</font> </b> </pre> </td>
+<li>Define a panel to contain the exit  push button.
+<pre> <b> <font color=blue>
+public  void setUpPanels() {
+   buttonPanel = new JPanel() ;
+   buttonPanel.add( exit ) ;
+   c.add( buttonPanel , BorderLayout.SOUTH) ;
+}
+</font> </b> </pre> </td>
+<li>Define a text area to display messages.
+<pre> <b> <font color=blue>
+public  void setUpTextArea() {
+
+   display = new JTextArea();
+   display.setEditable( false );
+   addWindowListener( new WindowHandler( this ) );
+   c.add( new JScrollPane( display ),
+             BorderLayout.CENTER );
+}
+</font> </b> </pre> </td>
+<li>Set the size of the main frame.
+<pre> <b> <font color=blue>
+setSize( 400, 400 );
+</font> </b> </pre> </td>
+<li>Set the initial location of the main frame on the terminal.
+<pre> <b> <font color=blue>
+setLocation( 10, 20 ) ;
+</font> </b> </pre> </td>
+<li>Make the main frame visible on the main frame.
+<pre> <b> <font color=blue>
+show();
+</font> </b> </pre> </td>
+</ol>
+At this point, are we finished with this tutorial? The answer is no! All we have done is create the <b>GUI</b> objects in the <b>setup()</b> method. Remember the <b>setup()</b> method is called from the constructor and this call is made once during initialization. When we refer to <a href="#HOPDM">Holland's OOP Programming Design Model</a>, we see the relationship between the <b>GUI</b>, which is the data, and the method, which is the <b>setup()</b> method.
+The purpose of this tutorial was to create a multithreaded server.
+The <b><i>Basic Client/Server Application II</i></b> is a single threaded application. We will modify the <b>RunServer()</b> method so that it creates a new <b>thread</b> when a new <b>client</b> connects to the server.
+</p>
+<h3><a name="RMM">RunServer() and run() Method modifications </a> </h3>
+<p>In the <b>RunServer()</b> method, the data being manipulated is:
+<ol>
+<li><b>server_socket</b> - a ServerSocket object
+<ul>
+Listens for a Client connection to be made to this socket and accepts it. When the <b>accept()</b> method of ServerSocket is called, it returns a new Socket object that represents a new client connection that has attached to the server. Until a client attempts to connect, this method waits/listens. 
+When a successful connection is made, a Socket  object is returned. 
+</ul>
+<li><b>display</b> - a JTextArea object
+<li><b>socket</b> - a Socket object
+<ul>
+This class implements client sockets. A socket is an endpoint for communication between two machines. The <b>ServerSocket.accept()</b> method returns a <b>Socket</b> object when there has been a successful connection.
+</ul>
+<li><b>input</b> - a BufferedReader object, which reads text from a character-input stream
+<ul>
+<li>getInputStream() returns a stream object that can be used to communicate through the socket. 
+</ul>
+<li><b>request</b> - a MyThread object
+<li><b>thrd</b> - a Thread object
+</ol>
+The <b>request</b> and <b>thrd</b> objects are new in this modification. <b>MyThread</b>'s <b>run()</b> method has become the workhorse method of this application. The data and method relationship should be obvious. When a successful client connection is made, a new <b>Thread</b> object is created and started.
+In the tutorial on <b>Building a Basic Client/Server II Application</b>, an outline of the logic in the <b>RunServer()</b> method looked like: 
+<pre> <b> <font color=blue>
+try {
+   while(true) {
+      try {  // inner try construct
+         while(true) {  // inner while construct
+            ...
+         }
+      }
+   }
+}
+</font> </b> </pre>
+In this tutorial, the above inner <b>try</b> and <b>while</b> constructs have been moved to  <b>MyThread's run()</b> method.
+<p>In this tutorial, an outline of the <b>RunServer()</b> method looks like:
+<pre> <b> <font color=blue>
+try {
+   while(true) {
+      ...
+   }
+}
+</font> </b> </pre>
+and the <b>MyThread's run()</b> method looks like:
+<pre> <b> <font color=blue>
+try {  // previously the inner try construct
+   while(true) {  // previously the inner while construct
+      ...
+   }
+}
+</font> </b> </pre>
+In the following section, we will see an ourline of the <b>tcpServer class Methods</b>.
+</p> 
+<h3><a name="SOTSM">Summary of tcpServer Methods </a> </h3>
+<p>The outline of the <b>tcpServer</b> class looks like:
+<br> <br>
+<Table border>
+<tr bgcolor=lightyellow>
+<th>Summary of tcpServer Class Methods</th>
+</tr>
+<tr>
+<td>
+<pre> <b> <font color=blue>
+
+import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.*;
+
+/** **************************************************************
+ * The tcpServer class defines the framework for creating a server
+ * based multithreaded application. The server responds to request 
+ * from a Client. The purpose of the tcpServer class is to create 
+ * a server that 
+ *  1- Creates a server main frame
+ *  2- Establishes a server socker
+ *  3- Accepts clients in a multithreaded environment
+ ****************************************************************/
+public class tcpServer extends JFrame implements  ActionListener {
+    
+
+   /** **************************************************************
+     * This is the tcpServer constructor which is used to
+     * initialize the tcpServer() object.
+    ****************************************************************/
+    public  tcpServer() {
+       
+    }
+
+    /**  **************************************************************
+     * The setThreadcount() method resets the thread count.
+     ****************************************************************/
+    public  void setThreadcount( int a ) {
+        
+    }
+
+    public  void setup() {
+
+      setUpButtons() ;
+
+      setUpPanels() ;
+
+      setUpTextArea() ;
+      
+    }
+
+    /**  **************************************************************
+     * The setThreadcount() method resets the thread count.
+     ****************************************************************/
+    public  void setThreadcount( int a ) {
+       trdCnt = a ;
+    }
+
+
+   /**  ******************************************************************
+    * The setupThreads() method
+    *********************************************************************/
+    public void setupThreads() {
+
+      thrd = new Thread[ 15 ] ;
+    }
+
+    /**  **************************************************************
+     * The setUp() method does the intializes the application's
+     * 1- JButtons
+     * 2- JPanel
+     * 3- JTextArea
+     * 4- Set the size
+     * 5- Set the location of the application on the screen
+     * 6- Make the application visiable
+     *
+     ****************************************************************/
+    public  void setup() {
+
+    }
+
+    /** *********************************************************
+     * The setUpTextArea() method
+     * 1- Creates the display JTextArea
+     * 2- Adds a ScrollPane( to the display TextArea
+     ************************************************************/
+    public  void setUpTextArea() {
+      
+    }
+
+    /** *********************************************************
+     * The setUpPanels() method
+     * 1- Creates the buttonPanel JPanel
+     * 2- Adds the exit button to the buttonPanel
+     * 3- Adds the buttonPanel southern part of the content pane
+     ************************************************************/
+    public  void setUpPanels() {
+      
+    }
+
+    /** *********************************************************
+     * The setUpButtons() method
+     * 1- Creates the exit JButton
+     * 2- Sets the background color
+     * 3- Sets the foreground color
+     * 4- Add an ActionListener to the exit button
+     ************************************************************/
+    public  void setUpButtons() {
+      
+    }
+
+   /**  ******************************************************************
+    * The RunServer() method in the server reads and writes data to the
+    * client. the logic for the ServerRun() method is
+    *  1- Create a ServerSocket object
+    *  2- Create messages and display them in the text area.
+    *  3- Loop while waiting for Client connections.
+    *  4- Call ServerSocket accept() method and listen.
+    *  5- Create an InputStreamReader based on the socket.getInputStream() object
+    *  6- Create a BufferedReader based on the  InputStreamReader object
+    *  7- Create a new MyThread object
+    *  8- Start the new MyThread object
+    *********************************************************************/
+    public void RunServer() {
+       try {
+               
+          while( loopCTL ) {
+                            
+                   // Construct handler to process the Client request message.
+             try {
+                              
+             }
+             catch(Exception e) {
+               	       
+             }
+          }   // End of while loop
+               
+       }
+       catch (IOException e) {
+           
+       }
+    }
+
+   /** *********************************************************
+    * This method responds to the exit button being pressed
+    * on the tcpServer frame.
+    *************************************************************/
+   public void actionPerformed( ActionEvent e )    {
+      if ( e.getSource() == exit )
+          
+   }
+
+   /**  ****************************************************************
+    * This method closes the socket connect to the server.
+     *******************************************************************/
+   private void closeConnection() {
+      
+   }
+
+   /** ***********************************************************
+    * The sysExit() method is called in response to a close
+    * application event.
+    ************************************************************* */
+   public void sysExit( int ext ) {
+      l
+   }
+
+   /** ***********************************************************
+    * The sysPrint method prints out debugging messages.
+    ************************************************************ */
+   public void sysPrint( String str ) {
+      
+   }
+
+   /** ***********************************************************
+    * The main() is called by Java when the tcpServer program is
+    *  loaded.
+    ************************************************************ */
+    public static void main(String args[]) {
+       
+    }
+
+   /** ********************************************************
+    * This method closes the socket connect to the server when the
+    * application window is closed.
+    ********************************************************  */
+   public class WindowHandler extends WindowAdapter {
+      tcpServer tcpS;
+
+      public WindowHandler( tcpServer t ) { tcpS = t; }
+
+      public void windowClosing( WindowEvent e ) { tcpS.closeConnection(); }
+   }
+}
+</font> </b> </pre> </td>
+</tr>
+<tr>
+<th> Figure 5: tcpServer Class Methods</th>
+</tr>
+</Table> <br> <br>  
+A summary of the <b>tcpServer Methods</b> looks like:
+<br> <br>
+<Table border>
+<tr>
+<th colspan=2 bgcolor=lightskyblue>Summary of tcpServer Methods </th>
+</tr>
+<tr>
+<th bgcolor=lightyellow>Method</th>
+<th bgcolor=lightyellow>Description</th>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>actionPerformed()</b>  </td>
+<td> This method responds to the exit button being pressed on the tcpServer frame. </td>
+</tr>
+<tr>
+<td><b>closeConnection()</b> </td>
+<td>is used to close the socket connection and the input/output streams. </td>
+</tr>
+<tr>
+<td><b>main()</b>  </td>
+<td> this is the entry point for the server application. </td>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>RunServer()</b> </td>
+<td>this method is used to create the server socket, input/output streams and to listen for input from the socket. </td>
+</tr>
+<tr bgcolor=lightskyblue>
+<td><b>tcpServer()</b> </td>
+<td>this is the class constructor used for initialization. </td>
+</tr>
+<tr>
+<td><b>setThreadcount()</b> </td>
+<td>The setThreadcount() method resets the thread count. </td>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>setUp()</b> </td>
+<td> The setUp() method does the intializes the application's 
+<ol>
+<li>JButtons 
+<li>JPanel
+<li>JTextArea 
+<li>Set the size
+<li>Set the location of the application on the screen
+<li>Make the application visiable 
+</ol>
+</td>
+</tr>
+<tr>
+<td><b>setUpButtons()</b> </td>
+<td>The setUpButtons() method
+<ol>
+<li>Creates the exit JButton
+<li>Sets the background color
+<li>Sets the foreground color
+<li>Add an ActionListener to the exit button
+</ol>
+</td>
+</tr>
+<tr bgcolor=lightblue>
+<td><b>setUpPanels() </b> </td>
+<td>The setUpTextArea() method
+<ol>
+<li>Creates the buttonPanel JPanel
+<li>Adds the exit button to the buttonPanel
+<li>Adds the buttonPanel southern part of the content pane
+</ol>
+</td>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>setUpTextArea()</b> </td>
+<td>The setUpTextArea() method
+<ol>
+<li>Creates the display JTextArea
+<li>Adds a ScrollPane( to the display TextArea
+</ol>
+</td>
+</tr>
+<tr>
+<td><b>setupThreads() </b> </td>
+<td>The setupThreads() method creates a Thread array.</td>
+</tr>
+<tr bgcolor=lightblue>
+<td><b>sysExit()</b> </td>
+<td>The sysExit() method is called in response to a close application event. </td>
+</tr>
+<tr>
+<td><b>sysPrint()</b> </td>
+<td>TThe sysPrint method prints out debugging messages. </td>
+</tr>
+</Table> <br> <br>  
+<h3><a name="SOTSM">Summary of tcpServer Inner Class MyThread </a> </h3>
+<p>The outline of the <b>tcpServer</b>'s inner <b>MyThread</b> class looks like:
+<br> <br>
+<Table border>
+<tr bgcolor=lightyellow>
+<th>Summary of tcpServer Inner Class MyThread </th>
+</tr>
+<tr>
+<td>
+<pre> <b> <font color=blue>
+
+   /** ***********************************************************
+    *  The purpose of the MyThread class is to create a thread of
+    *  execution to respond to client requests.  A thread is a
+    *  thread of execution in a program. The Java Virtual Machine
+    *  allows an application to have multiple threads of execution
+    *  running concurrently.
+    **************************************************************/
+   public class MyThread extends Thread {
+      
+
+      /** *********************************************************
+       * The purpose of the MyThread() constructor is to used the
+       * passed parameters to initialize MyThread class level
+       * variables.
+       **************************************************************/
+      public MyThread( tcpServer tps , Socket socket , int trd_Cnt ) throws Exception {
+         
+      }
+
+      /** *********************************************************
+       * The run() method responds to the client's request.
+       **************************************************************/
+      public void run() {
+         
+         try {
+            while(  !message.toUpperCase().equals( "QUIT" ) ) {
+               if( message.equals( hWorld ) ) {  
+               }   
+	       else if( message.equals( gServ ) ) {   
+               }    
+               else if( message.equals( gNames ) ) {  
+               }    
+               else   if ( tokens.countTokens() >= 1 )   {  
+               }  
+               else   if ( tokens.countTokens() >= 1 )   {
+
+                  if ( messageTokens[ 0 ].toUpperCase().equals( "GET" ) ) { 
+                  }
+                  else if ( messageTokens[ 0 ].toUpperCase().equals( "FIND" ) ) 
+                  }
+                  else if ( messageTokens[ 0 ].toUpperCase().equals( "LISTALL" ) ) {
+                  } 
+                  else if ( messageTokens[ 0 ].toUpperCase().equals( "ADD" ) ) {  
+                  }
+                  else if ( messageTokens[ 0 ].toUpperCase().equals( "UPDATE" ) ) {  
+                  }
+                  else if ( messageTokens[ 0 ].toUpperCase().equals( "DELETE" ) ) { 
+                  }
+               }  
+            }
+         }
+         catch(Exception e) {
+             
+         }
+      }
+
+   }
+</font> </b> </pre></td>
+</tr>
+<tr>
+<th> Figure 6:</th>
+</tr>
+</table>
+<br> <br>
+<Table border>
+<tr>
+<th colspan=2 bgcolor=lightskyblue>Summary of  Inner Class MyThread Methods </th>
+</tr>
+<tr>
+<th bgcolor=lightyellow>Method</th>
+<th bgcolor=lightyellow>Description</th>
+</tr>
+<tr>
+<td> MyThread</td>
+<td> The purpose of the MyThread() constructor is to used the passed parameters to initialize MyThread class level variables. </td>
+</tr>
+<tr>
+<td>run()</td>
+<td> The run() method responds to the client's request.</td>
+</tr>
+</Table>
+</p>
+<h3><a name="OOTM">Outline of tcpClient Methods</a> </h3>
+<p>An outline of <b>tcpClient Methods</b> are shown below.  <br> <br>
+<table border>
+<tr bgcolor=lightyellow>
+<th>Outline of tcpClient Methods</th>
+</tr>
+<tr>
+<td> 
+<b> <pre> <font color=blue>import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.awt.event.*;
+import java.util.*;
+import java.net.*;
+
+/** ***************************************************************
+  * The tcpClient class creates an object for the Client frame.
+  * Set up a client that will receive
+  *    - a connection from a server
+  *      - sends requests for services to the Server
+  *        - Send
+  *
+  *    - process server responses to string(s) sent back to the client
+  *    - and close the connection when the Client is finished.
+  *
+ ******************************************************************/
+public class tcpClient extends JFrame implements  ActionListener {
+
+
+   /** ***************************************************************
+    *  The tcpClient constructor initializes the tcpClient object.
+    ******************************************************************/
+   public tcpClient() {
+      super( "Client" ) ;
+
+      setUp() ;
+
+      connect() ;
+
+      RunClient() ;
+
+      closeConnection() ;
+   }
+
+   /** ***************************************************************
+    * The setUp() method does the intialization for the application.
+    * The setUp() method
+    * 1- Creates JButtons
+    * 2- Creates JPanels
+    * 3- Creates JLabels
+    * 4- Adds Action Listeners to the JButtons
+    * 5- Sets the size for the JFrame
+    * 6- Sets the location for the JFrame
+    * 7- Makes the JFrame visible
+    ******************************************************************/
+   public  void setUp() {
+
+   }
+
+   /** ***************************************************************
+    * The setUpButtons() method
+    * 1- Creates the JButtons
+    * 2- Sets the Background color
+    * 3- Sets the Foreground color
+    * 4- Adds an ActionListener  to the JButtons
+    ***************************************************************** */
+   public void setUpButtons() {
+
+   }
+
+   /** ***************************************************************
+    * The setUpLabText() method creates
+    * 1- The enterLabel JLabel
+    * 2- The enterBox JTextField for user input
+    * 3- The textPanel JPanel
+    * 4- Attaches the GridLayout manager to the textPanel JPanel
+    * 5- Adds textPanel to the northern part of the content pane
+    * 6- Creates the display JTextArea
+    * 7- Adds the display JTextArea center of the content pane
+    ***************************************************************** */
+   public void setUpLabText() {
+
+   }
+
+   /** *****************************************************************
+    *  The connect() method does the intialization of the client socket
+    *  on localhost and port 5050
+    ***************************************************************** */
+   public void connect() {
+
+   }
+
+   /** *****************************************************************
+    * The sendData() method in the client sends data to the server
+    ***************************************************************** */
+   public void sendData(String str) {
+       
+   }
+
+
+   /** *****************************************************************
+    * The RunClient() method in the client reads and writes data to the server.
+    ***************************************************************** */
+   public void RunClient() {   
+
+   }
+
+   /** *****************************************************************
+    * This method responds to the find, delete, clear or exit button
+    *  being pressed on the tcpClient frame.
+    ***************************************************************** */
+   public void actionPerformed( ActionEvent e )    {
+
+   }
+
+   /*******************************************************************
+    * This method shows the name found by the server.
+    ***************************************************************** */
+   public  void showName() {
+  
+   }
+
+   /** *****************************************************************
+    * This method lists all of the name found by the server.
+    ***************************************************************** */
+   public  void listNames() {
+ 
+   }
+
+   /** *****************************************************************
+    * This method closes the socket connect to the server.
+    ***************************************************************** */
+   public  void closeConnection() {
+ 
+   }
+
+   /** *****************************************************************
+    * This method is the main entry point called by the JVM.
+    ****************************************************************** */
+   public static void main(String[] args) {
+ 
+   }
+
+   /** *****************************************************************
+    * This method closes the socket connect to the server when the
+    * application window is closed.
+    ***************************************************************** */
+   public class WindowHandler extends WindowAdapter {
+      tcpClient tcpC;
+
+      public WindowHandler( tcpClient t ) { tcpC = t; }
+
+      public void windowClosing( WindowEvent e ) { tcpC.closeConnection(); }
+   }
+
+}
+</font> </pre> </b> </td>
+</tr>
+<tr>
+<th> Figure 7:  </th>
+</table>
+</p>
+<h3><a name="SOTM">Summary of tcpClient Methods </a> </h3>
+<p>The <b>Summary of tcpClient Methods</b> are shown below. <br> <br>
+<Table border>
+<tr>
+<th colspan=2 bgcolor=lightskyblue>Summary of tcpClient Methods </th>
+</tr>
+<tr>
+<th bgcolor=lightyellow>Method</th>
+<th bgcolor=lightyellow>Description</th>
+</tr>
+<tr>
+<td><b>actionPerformed()</b> </td>
+<td>This method responds to the send, clear, or exit buttons being pressed on the tcpClient frame. </td>
+</tr>
+<tr bgcolor=lightskyblue>
+<td><b>main()</b> </td>
+<td>This method is the main entry point called by the JVM. </td>
+</tr>
+<tr>
+<td><b>closeConnection()</b> </td>
+<td>is used to close the socket connection and the input/output streams. </td>
+</tr>
+<tr>
+<td><b>connect()</b> </td>
+<td> this method is used to connect to the socket. </td>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>runClient()</b> </td>
+<td>this method is used to 
+<ol>
+<li>Create input/output streams 
+<li>Make requests of the server in the form of messages sent to the server
+<li>Listen for input from the socket. 
+</ol>
+</td>
+</tr>
+<tr>
+<td><b>listNames()</b> </td>
+<td> This method lists all of the name found by the server. </td>
+</tr>
+<tr>
+<td><b>main()</b> </td>
+<td> This method is the main entry point called by the JVM. </td>
+</tr>
+<tr>
+<td><b>	RunClient()</b> </td>
+<td> The RunClient() method in the client reads and writes data to the server. </td>
+</tr>
+<tr>
+<td><b>sendData()</b> </td>
+<td>The sendData() method in the client sends data/requests to the server. </td>
+</tr>
+<tr>
+<tr bgcolor=lightskyblue>
+<td><b>setUp()</b> </td>
+<td> this method is used to setup and allocate the GUI objects. </td>
+</tr>
+<tr>
+<td><b>setUpButtons()</b> </td>
+<td>The setUpButtons() method
+<ol>
+<li>Creates the JButtons
+<li>Sets the Background color
+<li>Sets the Foreground color
+<li>Adds an ActionListener to the JButtons
+</ol>
+</td>
+</tr>
+<tr bgcolor=lightyellow>
+<td><b>setUpLabText()</b> </td>
+<td>The setUpLabText() method creates
+<ol>
+<li>The enterLabel JLabel
+<li>The enterBox JTextField for user input
+<li>The textPanel JPanel
+<li>Attaches the GridLayout manager to the textPanel JPanel
+<li>Adds textPanel to the northern part of the content pane
+<li>Creates the display JTextArea 7- Adds the display JTextArea center of the content pane
+</ol>
+</td>
+</tr>
+<tr bgcolor=lightskyblue>
+<td><b>showName()</td>
+<td>This method shows the name found by the server.</td>
+</tr>
+<tr>
+<td><b>tcpClient()</b> </td>
+<td>this is the class constructor used for initialization. </td>
+</tr>
+</table> <br> <br>
+</p>
+<h2><a name="DEF">Definitions</a> </h2>
+<p><a name="APP"><b>applet</b></a> <ul>  is a program designed to be executed from within another application, such as a browser like Netscape. An applet is different from an application. Applets cannot be executed directly from the operating system like an application. </ul> </p>
+<p><a name="APPS"> <b>application server</b></a> <ul>  Also called an appserver. A program that handles all application operations between users and an organization's backend business applications or databases. Application servers are typically used for complex transaction-based applications. To support high-end needs, an application server has to have built-in redundancy, monitors for high-availability, high-performance distributed application services and support for complex database access.<br><br>
+Sometimes referred to as a type of middleware, application servers occupy a large chunk of computing territory between database servers and the end user, and they often connect the two. However, don't limit yourself to traditional database programs. Once you visualize airport management packages, you can start to visualize the only limit is your imagination.  </ul> </p>
+<p><a name="APT"><b>Apache Tomcat</b></a> <ul>  is the servlet container that is used in the official Reference Implementation for the Java Servlet and JavaServer Pages technologies.  Tomcat is a servlet container that can be used as a web server.</ul> </p>
+<p><a name="ASYN"><b>asynchronous</b></a> <ul> Most communication between computers and devices is asynchronous -- it can occur at any time and at irregular intervals. Communication within a computer, however, is usually synchronous and is governed by the microprocessor clock. Signals along the bus, for example, can occur only at specific points in the clock cycle.</ul> </p>
+<p><a name="CONC"><b>concurrently</b></a> <ul> In programming, this refers to the ability of multiple programs running at the same time. This can only happen if there are multiple processors. If there is one processor, then the programs are timeslicing.</ul> </p>
+<p><a name="DISTPROC"> <b>distributed processing</b></a> <ul> Refers to any of a variety of computer system configurations that comprise more than one computer/processor to run an application. This includes 
+parallel processing or multiprocessing, in which a single computer uses more than one CPU to execute programs. More often, however, distributed processing refers to local-area networks (LANs) designed so that a single program can run simultaneously on various computers at one site or at various sites. Most distributed processing systems contain sophisticated software that detects 
+idle CPUs on the network and parcels out programs to utilize them. </p>
+<p>Another form of distributed processing involves distributed databases, databases in which the data is stored across two or more computer systems. The database system keeps track of where the data is so that the distributed nature of the database is not apparent to users.  </ul> </p>
+<p><a name="HTTP"><b> HTTP</b></a> <ul> Short for HyperText Transfer Protocol, the underlying protocol used by the World Wide Web. HTTP defines how messages are formatted and transmitted, and what actions Web servers and browsers should take in response to various commands. For example, when you enter a URL in your browser, this actually sends an HTTP command to the Web server directing it to fetch and transmit the requested Web page. </ul> </p>
+<p><a name="JSP"><b> JSP</b></a> <ul>An extensible Web technology that uses template data, custom elements, scripting languages, and server-side Java objects to return dynamic content to a client. Typically the template data is HTML or XML elements, and in many cases the client is a Web browser. </ul>  </p>
+<p><a name="MODW"><b>modal window</b></a> <ul>  A modal window is any type of window that is a child (secondary window, dialog) to a parent window and must run to completion or exit before returning control to the parent. This means that no other window can be accessed while this secondary window is active. An example of this is the <b>Save</b> dialog in a text editor.</ul> </p>
+<p><a name="MODLW"><b>modeless window</b></a> <ul>  Similar to a modal window as it is a secondary window (i.e., child, dialog) that stays active on the user's screen until exited. Modeless windows can be minimized or hidden behind other windows. Unlike a modal window, a modeless window allows the user to continue accessing other windows (parent window) while the modeless window is open. </ul> </p>
+<p><a name="MULTIP"><b> multiprocessing</b></a> <ul> Refers to a computer system's ability to support more than one process (program) at the same time. Multiprocessing operating systems enable several programs to run concurrently. 
+<p>Multiprocessing or multiple processors involves more than one processor. Multiprocessing is not the same as multitasking/multithreading. Java supports multitasking/multithreading. The <b>Windows</b> operating system supports multitasking/multithreading. <b>Windows</b> does not support multiprocessing. </ul> </p>
+<p><a name="MULTIT"> <b>multithreading</b></a>
+<ul>This is the capability of an operating system to execute different parts of a program, called threads, simultaneously. In reality, these threads run on a single processor, and these threads do not run at the same time or simultaneously. In effect, these threads are timeslicing. On a single processor, only one program can be <b>running</b> at a time. The programmer must carefully design the program in such a way that all the threads can timeslice without interfering with each other.</ul>
+<p><a name="NT"><b>n-tier</b></a>  - 
+<pre><b>
+                               Tier 3
+                              +---------+
+                           +->| Printer |
+                           |  +---------+
+                           |
+  Tier 1        Tier 2     |    Tier 4
++--------+     +--------+  |  +------+
+| Client |<--->| Server |<-+->| DBMS |
++--------+     +--------+  |  +------+
+   GUI         <a href="#APPS">Application</a> .     DB
+                Server     . 
+                           .    Tier n
+                           |  +---------+
+                           +->| whatever|
+                              +---------+                           
+</b> </pre>
+</p>
+<p><a name="PROC"><b>process</b></a>  <ul> A process is an executing program. An example could be a running text editor, word processor, or a browser.  </ul>   </p>
+<p><a name="REALT"><b>realtime</b></a> <ul> Real-time processing is the application of hardware and software systems that are subject to a "real-time constraint"—i.e., operational deadlines from stimuli/data input to output or the system response to that stimuli. </ul> </p>
+<p><a name="SWR"><b>stepwise refinement</b></a> <ul> Is a design process whereby a task is defined at a high level and is iterated on until the lower level of detail required for implementation is reached. For example, if we start with the outline in <b>Figure 9</b> and proceed with stepwise refinement, the process might look like:
+<br> <br> 
+<table border>
+<tr bgcolor=lightyellow>
+<th> An Example of Stepwise refinement </th>
+</tr>
+<tr>
+<td><pre> <b> <font color=blue>
++-------------------------------+
+|public class HardwareStore() { |
+|                               |
+|}                              |
++-------------+-----------------+
+              |
+              |
+              V
++-------------------------------+
+|public class HardwareStore() { |
+|   public HardwareStore()   {  |
+|      setup() ;                |
+|   }                           |
+|}                              |
++-------------+-----------------+
+              |
+              |
+              V
++-------------------------------+
+|public class HardwareStore() { |
+|   public HardwareStore()   {  |
+|      setup() ;                |
+|   }                           |
+|   setup() {                   |
+|                               |
+|      SetupMenu() ;            |
+|                               |
+|      SetupPanels() ;          | 
+|                               |
+|      SetupButtons() :         |
+|   }                           |
+|}                              |
++-------------+-----------------+
+              |
+              |
+              V
++-------------------------------+
+|public class HardwareStore() { |
+|   public HardwareStore()   {  |
+|      setup() ;                |
+|   }                           |
+|   setup() {                   |
+|                               |
+|      SetupMenu() ;            |
+|                               |
+|      SetupPanels() ;          | 
+|                               |
+|      SetupButtons() :         |
+|   }                           |
+|   public SetupMenu() {        |
+|   }                           |  
+|   public SetupPanels() ;      |
+|   }                           |  
+|   public SetupButtons() ;     |
+|   }                           |
+|   public static void          |
+|       main(String[] args) {   |
+|}                              |
++-------------+-----------------+
+              |
+              |
+              V
+             ...
+</font> </b>  </pre> </td>
+</tr>
+<tr>
+<th> Figure 8:</th>
+</tr>
+</table> <br> <br>
+If you compare <b>Figure 8</b> with <b>Figure 3</b> and then look at the <b>tcpServer's SetupButtons()</b> method, you can see where the stepwise refinement is going. You'll 
+notice that you can start your template with <b>Figure 3</b>, change the class and constructor names to the name of your new class, and you have a starting point for your next project.</p>
+<p>Some programmers prefer pseudocode to flowcharts because pseudocode is self-documenting. I use flowcharts for tutorials because they are worth a thousand words, and I use pseudocode for my designs.
+</ul> </p>
+<p><a name="STRUCTP"><b>structured programming</b></a> <ul>  A process in programming where the programmer divides his program's source code into logically structured chunks of code. This process is also known as stepwise refinement.</ul>   </p>
+<p><a name="SYN"><b>synchronous</b></a> - Means that an event occurs at regular intervals. The opposite of synchronous is asynchronous.</p>
+<p><a name="TCP"><b>TCP</b></a>  <ul> Abbreviation of Transmission Control Protocol, and pronounced as separate letters. TCP is one of the main protocols in TCP/IP networks. Whereas the IP protocol deals only with packets, TCP enables two hosts to establish a connection and exchange streams of data. TCP guarantees delivery of data and also guarantees that packets will be delivered in the same order in which they were sent.  </ul>  </p>
+<p><a name="TEMP"><b>template</b></a> -  establishes or serves as a pattern. </p>
+<p><a name="TDP"><b>top-down programming</b></a> <ul>  A process in programming that begins with a general task and divides the general task into more specific tasks. At the top level of the program/class there is only the general task. For example, if you are tasked to build a <i>Hardware Inventory</i> application that extends <b>JFrame</b>, you might start with the following:
+<br> <br> 
+<table border>
+<tr bgcolor=lightyellow>
+<th> Outline for a Hardware Store Inventory Program</th>
+</tr>
+<tr>
+<td><pre> <b> <font color=blue>
+/** ************************************************************ 
+ * In the HardwareStore class, the following take place. There is    
+ * a class to:
+ * 1- Password protect adds, updates, and deletes.
+ * 2- List all entries in a table.
+ * 3- Update a record in a table.
+ * 4- Add a record to a table.
+ * 5- Delete a record from a table.
+ * 6- Gather data on a purchase.
+ * 7- Add items to a shopping cart.
+ * 8- Gather data on a customer.
+ * 9- Contain the data for a record.
+ *
+ **************************************************************/
+public class HardwareStore extends JFrame
+          implements ActionListener {
+
+   public HardwareStore()   {
+
+   }
+
+   public static void main( String args[] )
+   {
+
+   }
+
+   public class PassWord  extends Dialog
+         implements ActionListener 
+   public class ListRecs extends Dialog
+         implements ActionListener  
+
+   public class ListRecs extends Dialog
+         implements ActionListener  
+
+   public class UpdateRec extends Dialog
+         implements ActionListener  
+   public class NewRec extends Dialog
+        implements ActionListener  
+   public class DeleteRec extends Dialog
+          implements ActionListener  
+
+   public class BuyRec extends Dialog
+         implements ActionListener  
+   public class ShoppingCart extends Dialog
+         implements ActionListener  
+   public class Customer  extends Dialog
+         implements ActionListener  
+   public public class Record  
+}
+</font> </b>  </pre> </td>
+</tr>
+<tr>
+<th> Figure 9:</th>
+</tr>
+</table> <br> <br>
+As the program code evolves or as you stepwise refine, the programming becomes more and more detailed. </ul> </p>
+<p><a name="THREAD"><b>thread</b></a>
+<ul>In programming, this refers to a part of a program that can execute concurrently with and independently of other parts of the program.</ul>
+<p><a name="TIMESL"><b>timeslicing</b></a>
+<ul>
+In programming, this refers to how the operating system parcels out time for the various programs to run/execute. This is usually done on a priority basis, with the operating system having the highest priority. Requests for system services usually result in a program/thread yielding its execution time and going into a wait state. When this happens, the operating system grants another program/thread execution time.
+In some systems, a program/thread is allocated a certain amount of time. When this time period is reached, the program/thread must yield to another program/thread.</p> 
+</ul>
+<p><a name="TWOT"><b>Two-tier</b></a>  - A client/server architecture where the GUI runs on the client and the business logic runs on the server.
+<pre><b>
+  Tier 1        Tier 2         
++--------+     +--------+     
+| Client |<--->| Server |
++--------+     +--------+     
+   GUI         |Business|    
+               |Logic   |       
+               +--------+               
+</b> </pre>
+</p>
+<p><a name="TT"><b>Three-tier</b></a>  - A client/server architecture consisting of three well-defined and separate <a href="#PROC">processes.</a>
+<pre><b>
+  Tier 1        Tier 2         Tier 3
++--------+     +--------+     +------+
+| Client |<--->| Server |<--->| DBMS |
++--------+     +--------+     +------+
+   GUI          Application      DB
+                Server 
+</b> </pre>
+</p>
+<br> <br>
+          <br> </a><center><a name="INH"> 
+          <img src="indexHWS_files/bludiv4684.html" width="600" height="5">
+           <p><a name="INH"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">[<a href="http://sumtotalz.com/TotalAppsWorks/index.html">HOME</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/consulting.html">Consulting</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/design.html">Design</a>]
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/Maintenance.html">Maintenance</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/project.html">Project</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/testing.html">Testing</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/training.html">Training</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/turnkey.html">Turnkey</a>] 
+                  [<a href="http://sumtotalz.com/TotalAppsWorks/java.html">Java</a>]</font></font></font></p>
+
+          <p><font color="black" size="2" face="Arial, Helvetica, sans-serif">© 2002 - 2007 All 
+                Rights Reserved<b><i> Total Application Works </i></b></font></font></font></p> </center>
+<p></p>
+</font>
+</body>
+</html>

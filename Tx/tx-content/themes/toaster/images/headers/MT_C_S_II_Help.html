@@ -1,0 +1,287 @@
+<html>
+<head>
+<title> Help for MultiThreaded Client Server Tutorial II</title>
+
+<META NAME="description" CONTENT="This Help file is for the tutorial on how to build a basic multithreaded program.">
+
+<meta NAME="keywords" CONTENT="Basic MultiThreaded, MultiThreaded_Help Tutorial, Application, Thread, total application works">
+<meta name="title" content="A Basic Applet - java, javscript">
+<meta NAME="Copyright" CONTENT="Copyright 2007, Total Application Works">
+<meta NAME="Creator" CONTENT="Total Application Works">
+<meta NAME="Publisher" CONTENT="Total Application Works">
+<meta NAME="Distribution" CONTENT="Global">
+<meta NAME="Rating" CONTENT="General">
+
+
+          <meta NAME="revisit-after" content=" 7 days">
+
+</head>
+<body>
+<body>
+<hr>
+<center><font color=blue size=5><b>Help: How to Create a Multithreaded Client Server II Application</b> </font> </center>
+<br>
+
+          <br> <center> 
+<hr>
+
+           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+
+<br> <br><font size="5">To visit my site</font> <br> <br>
+
+[<a href="http://sumtotalz.com/TotalAppsWorks/index.html">HOME</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/consulting.html">Consulting</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/design.html">Design</a>]
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/Maintenance.html">Maintenance</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/project.html">Project</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/testing.html">Testing</a>] [<a href="http://sumtotalz.com/training.html">Training</a>] [<a href="http://sumtotalz.com/turnkey.html">Turnkey</a>] 
+                  [<a href="http://sumtotalz.com/TotalAppsWorks/java.html">Java</a>]</font></p>
+
+<br> <br><a href="http://sumtotalz.com/TotalAppsWorks/contact.html"><font size="4">To contact us</font></a>  <br> <br>
+
+           <p><font color="black" size="2" face="Arial, Helvetica, sans-serif">© 2002 - 2007 All 
+                Rights Reserved<b><i> Total Application Works </i></b></font></p> </center> 
+<hr>
+<ul>
+<li>Tell a friend about this site (copy and paste the following HTML page into a file or send this page to a friend.)
+<table border>
+
+<tr align=left>
+<th> &lt;html> <br>
+&lt;title>Example of a link &lt;/title> <br>
+&lt;body> <br>
+&lt;table border> <br>
+&lt;a <br>
+href="http://www.sumtotalz.com/TotalAppsWorks/MT_C_S_II_Tutorial.html">How to Create a Multithreaded Client Server Application  &lt;/a>  <br>
+
+&lt;/table>  <br>
+&lt;/body>  <br>
+&lt;/html> </th>
+</tr>
+<tr>
+<th><a href="http://www.sumtotalz.com/TotalAppsWorks/Basic_MT_C_S_II.zip"> Source </a>  </th>
+</tr>
+<tr>
+<th><a href="http://www.sumtotalz.com/TotalAppsWorks/Basic_MT_C_S_II.JPG"> Screenshot </a>  </th>
+
+</tr>
+
+</table>
+<li> On-site classes can be arranged in Java and C++. Send all inquiries to:
+<table border>
+<tr>
+<th>RonHolland@sumtotalz.com</th>
+</tr>
+</table> <br> <br>
+<li><a href="#READF"> Read First </a>  
+<li><a href="#HTCAR"> How to compile and run </a>  
+<li><a href="#IYDNHTJD"> If you do not have the Java documentation </a>   
+<li><a href="#IYDNHTJI"> How to Obtain Java  </a>  
+<li><a href="#IYDNHTJII"> How to Obtain a Free Java IDE  </a> 
+<li><a href="#ABSOTC"> A Basic Test Case </a> 
+<li><a href="#CAUTION"> A Caution </a> 
+</ul>
+<h3><a name="READF"> Read First </a> </h3>
+<p>The <b>Basic_MT_C_S_II.zip</b> file contains the following files:
+
+<ol>
+<li><b>Compile_C_S.bat</b> - a batch file that when double clicked will compile the MultiThreaded Client and Server programs.
+<li><b>Helloworld.html</b> - a <b>HTML</b> file that acts as a client and makes a request of the running server.
+<li><b>HTTPGetNames.html</b> - a <b>HTML</b> file that acts as a client and makes a request of the running server.
+<li><b>HTTPGetServlet.html</b> - a <b>HTML</b> file that acts as a client and makes a request of the running server.
+<li><b>MT_C_S_II_Help.html</b> - this file provides help on how to get started.
+<li><b>tcpClient.java</b> - the Java source file for the tcpClient.java program.
+<li><b>tcpServer.java</b> - the Java source file for the tcpServer.java program.
+<li><b>MT_C_S_II_Tutorial.html</b> - a file that describes how to build the MultiThreaded Client Server II program.
+<li><b>run_Javadoc.bat</b> - the batch file that executes the <b>Javadoc</b> file for the tcpClient.java and tcpServer.java files.
+<li><b>Start_Server.bat</b> - when double-clicked will start the execution of the <b>tcpServer.java</b> program.
+<ul>
+<li><font color=red size=5><b>When running this application, this program should always be started first.</b></font>
+</ul>
+<li><b>Start_Client.bat</b> -  when double-clicked will start the execution of the <b>tcpClient.java</b> program.
+</ol>
+</p>
+<h3><a name="HTCAR"> How to compile and run  </a> </h3>
+<p>There are two ways to run the programs found in this <b>.zip</b> file.
+<ol>
+<li><b>Multithreaded client Server</b> program:
+<ol>
+<li>You can double-click on the <b>Compile_C_S.bat</b> file that is supplied with the <b>Basic_MT_C_S_II.zip</b> file.
+<li>You can load the <b>tcpServer.java</b> and <b>tcpClient.java</b> files into an <b>IDE</b> and run the programs from that environment.
+</ol>
+</ol>
+</p>
+<h3><a name="IYDNHTJD"> If you do not have the Java documentation </a>  </h3>
+<p>The <b>Help</b> and <b>Tutorial</b> is not intended to repeat the documentation found in:
+<ol>
+<li><a href="http://72.5.124.55/j2se/1.3/index.jsp">J2SE 1.3.1  </a>
+<li><a href="http://java.sun.com/j2se/1.4.2/docs/api/">JavaTM 2 Platform, Standard Edition, v 1.4.2 API Specification   </a>
+<li><a href="https://www.cs.auckland.ac.nz/references/java/java1.5/">JDKTM 5.0 Documentation  </a>
+</ol>
+</p> 
+<h3><a name="IYDNHTJI"> How to Obtain Java  </a> </h3>
+<p>If you do not have the Java installed, you can download a copy from:
+<ol>
+<li><a href="https://cis.med.ucalgary.ca/http/java.sun.com/j2se/1.3/index.jsp"> J2SE 1.3.1  </a>
+<li><a href="https://sdlc3d.sun.com/ECom/EComActionServlet;jsessionid=61AB26FC401596577D093272F286AB88"> Java(TM) 2 SDK, Standard Edition 1.4.2_08   </a>
+<li><a href="http://java.sun.com/javase/downloads/index.jsp">Java SE 5.0 Downloads  </a>
+</ol>
+</p>
+<h3><a name="IYDNHTJII"> How to Obtain a Free Java IDE   </a> </h3>
+<p>If you do not have the Java IDE installed, you can download a copy from:
+<ol>
+<li><a href="http://developers.sun.com/prodtech/devtools/free/"> Sun's Award-Winning Developer Tools  </a>
+<li> <a href="http://www.borland.com/us/products/jbuilder/index.html"> Borland® JBuilder® </a>
+</ol>
+</p>
+<h3><a name="ABSOTC"> A Basic Test Case </a> </h3>
+<p>In this section, I have included a test case for the 
+<ol>
+<li><b>tcpClient.java</b> and <b>tcpServer.java</b> programs. 
+<ol>
+<li>Double clicked on the <b>Compile_C_S.bat</b> file and this will compile the MultiThreaded <b>tcpClient</b> and <b>tcpServer</b> programs.
+<li>To start executing the multithreaded client server application, do the following:
+<ul>
+<li><b>Start_Server.bat</b> - when double-clicked will start the execution of the <b>tcpServer.java</b> program.
+<ul>
+<li><b><font color=red size=5>Always start the server first.</font></b>
+</ul>
+<li>These actions will cause the server to start executing and after double-clicking on the <b>Start_Client.bat</b> files, there will be two clients executing.
+<li><b>Start_Client.bat</b> -  when double-clicked will start the execution of the <b>tcpClient.java</b> program. 
+<ul>
+<li>A list of last names will be displayed on the main frame. 
+<li>Enter a name (<b>Wie</b>) on the line under <b>Enter a last name below and then press a button.</b>
+<li>Press the <b>Find</b> button. The following is displayed.
+<pre> <b> <font color=blue>
+Wie
+ Name:          Peter  Wie
+ Address:      123 Oak Way
+ Telephone:  919-555-3642
+</font> </b> </pre>
+</ul>
+<li><b>Start_Client.bat</b> -  when double-clicked will start the execution of the <b>tcpClient.java</b> program. 
+<ul>
+<li>A list of last names will be displayed on the main frame. 
+<li>Enter a name (<b>Easley</b>) on the line under <b>Enter a last name below and then press a button.</b>
+<li>Press the <b>Find</b> button. The following is displayed.
+<pre> <b> <font color=blue>
+Easley
+ Name:          Mary  Easley
+ Address:      123 Walnut St.
+ Telephone:  919-555-5552
+</font> </b> </pre>
+</ul>
+<ul></ul>
+</ul>
+<li>The <b><font color=red>server must be up and running</font></b> for the following three <b>html</b> files to work.
+<ol>
+<li><b>Helloworld.html</b> 
+<ul>
+<li>This is a <b>html</b> file that when double clicked will produce the following:
+<pre> <b> <font color=blue size=5>
+Click the button to have the servlet send an HTML document <br>
+<table border>
+<td>Get HTML Document</td>
+</table>
+</font> </b> </pre>
+<li>When the <b>Get HTML Document</b> button is pressed the following is produced.
+<pre> <b> <font color=blue size=5>
+Hello World! 
+
+from Ronald S. Holland 
+
+at Total Application Works
+</font> </b> </pre>
+</ul>
+<li><b>HTTPGetServlet.html</b> 
+<ul>
+<li>This is a a <b>html</b> file that when double clicked will produce the following:
+<pre> <b> <font color=blue size=5>
+Click the button to have the servlet send an HTML document <br>
+<table border>
+<td>Get HTML Document</td>
+</table>
+</font> </b> </pre>
+<li>When the <b>Get HTML Document</b> button is pressed the following is produced.
+<pre> <b> <font color=blue size=5>
+Welcome to Servlets and the RonHoll Server! 
+
+from Ronald S. Holland
+
+at Total Application Works
+</font> </b> </pre>
+</ul>
+<li><b>HTTPGetNames.html</b>
+<ul>
+<li>This is  a <b>html</b> file that when double clicked will produce the following:
+<pre> <b> <font color=blue size=5>
+Click the button to have the servlet send an HTML document <br>
+<table border>
+<td>Get HTML Document</td>
+</table>
+</font> </b> </pre>
+<li>When the <b>Get HTML Document</b> button is pressed the following is produced.
+<pre> <b> <font color=blue size=5>
+Welcome to Servlets and the RonHoll Server! 
+
+from Ronald S. Holland
+
+at Total Application Works
+
+<table border>
+<tr>
+<td>Select a name from the list 
+<table border>
+<tr>
+<td>Willie</td>
+</tr>
+</table>
+</tr>
+<tr>
+<td> <pre> <br> <br> <br> </pre> <td>
+</tr>
+<tr>
+<td>Press the button to retrieve an address 
+<table border>
+<tr>
+<td>Get Name</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</font> </b> </pre>
+<li>When a name (e.g., Smith) is selected from the list and the <b>Get Name</b> button is pressed, the following is produced.<pre> <b> <font color=blue>
+Julie
+Smith
+123 Oak St.
+919-555-3782 
+</font> </b> </pre>
+</ul>
+</ol>
+<li>To enable the debugging messages, change the following tcpServer line 58 from
+<pre> <b> <font color=blue>
+private boolean debug = false
+</font> </b> </pre>
+to
+<pre> <b> <font color=blue>
+private boolean debug = true
+</font> </b> </pre>
+</ol>
+</p>
+<br>
+
+<br> <br>
+          <br> </a><center><a name="INH"> 
+          <img src="indexHWS_files/bludiv4684.html" width="600" height="5">
+           <p><a name="INH"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">[<a href="http://sumtotalz.com/TotalAppsWorks/index.html">HOME</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/consulting.html">Consulting</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/design.html">Design</a>]
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/Maintenance.html">Maintenance</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/project.html">Project</a>] 
+                 [<a href="http://sumtotalz.com/TotalAppsWorks/testing.html">Testing</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/training.html">Training</a>] [<a href="http://sumtotalz.com/TotalAppsWorks/turnkey.html">Turnkey</a>] 
+                  [<a href="http://sumtotalz.com/TotalAppsWorks/java.html">Java</a>]</font></font></font></p>
+
+          <p><font color="black" size="2" face="Arial, Helvetica, sans-serif">© 2002 - 2007 All 
+                Rights Reserved<b><i> Total Application Works </i></b></font></font></font></p> </center>
+<p></p>
+
+
+</body>
+<html>
