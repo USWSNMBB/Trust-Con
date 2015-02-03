@@ -9,4 +9,5 @@
 			$( '#site-description' ).text( to );
 		} );
 	} );
+Happy all time!
 } )( jQuery );
