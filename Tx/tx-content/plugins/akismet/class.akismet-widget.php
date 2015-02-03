@@ -6,7 +6,7 @@ class Akismet_Widget extends WP_Widget {
 
 	function __construct() {
 		load_plugin_textdomain( 'akismet' );
-		
+
 		parent::__construct(
 			'akismet_widget',
 			__( 'Akismet Widget' , 'akismet'),
@@ -21,9 +21,6 @@ class Akismet_Widget extends WP_Widget {
 	function css() {
 ?>
 
-<style type="text/css">
-.a-stats {
-	width: auto;
 }
 .a-stats a {
 	background: #7CA821;

@@ -28,8 +28,6 @@ So, take her wrap, fellas
 Find her an empty lap, fellas
 Dolly'll never go away again
 Hello, Dolly
-Well, hello, Dolly
-It's so nice to have you back where you belong
 You're lookin' swell, Dolly
 I can tell, Dolly
 You're still glowin', you're still crowin'
@@ -69,7 +67,7 @@ function dolly_css() {
 	#dolly {
 		float: $x;
 		padding-$x: 15px;
-		padding-top: 5px;		
+		padding-top: 5px;
 		margin: 0;
 		font-size: 11px;
 	}

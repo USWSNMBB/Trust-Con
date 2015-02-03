@@ -12,7 +12,6 @@ public static void main ( String args[] )
 ServerSocket ss =new ServerSocket(5000);
 Socket ds;
 ObjectOutputStream os;
-ObjectInputStream is;
 
 try
 {

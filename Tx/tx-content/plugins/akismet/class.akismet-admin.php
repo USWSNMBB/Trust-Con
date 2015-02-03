@@ -24,8 +24,6 @@ class Akismet_Admin {
 			die;
 		}
 
-		self::$initiated = true;
-
 		add_action( 'admin_init', array( 'Akismet_Admin', 'admin_init' ) );
 		add_action( 'admin_menu', array( 'Akismet_Admin', 'admin_menu' ), 5 ); # Priority 5, so it's called before Jetpack's admin_menu.
 		add_action( 'admin_notices', array( 'Akismet_Admin', 'display_notice' ) );
@@ -41,9 +39,9 @@ class Akismet_Admin {
 		add_filter( 'plugin_action_links', array( 'Akismet_Admin', 'plugin_action_links' ), 10, 2 );
 		add_filter( 'comment_row_actions', array( 'Akismet_Admin', 'comment_row_action' ), 10, 2 );
 		add_filter( 'comment_text', array( 'Akismet_Admin', 'text_add_link_class' ) );
-		
+
 		add_filter( 'plugin_action_links_'.plugin_basename( plugin_dir_path( __FILE__ ) . 'akismet.php'), array( 'Akismet_Admin', 'admin_plugin_settings_link' ) );
-		
+
 		add_filter( 'wxr_export_skip_commentmeta', array( 'Akismet_Admin', 'exclude_commentmeta_from_export' ), 10, 3 );
 	}
 
@@ -63,11 +61,11 @@ class Akismet_Admin {
 		if ( !current_user_can( 'manage_options' ) )
 			return;
 	}
-	
-	public static function admin_plugin_settings_link( $links ) { 
+
+	public static function admin_plugin_settings_link( $links ) {
   		$settings_link = '<a href="'.esc_url( self::get_page_url() ).'">'.__('Settings', 'akismet').'</a>';
-  		array_unshift( $links, $settings_link ); 
-  		return $links; 
+  		array_unshift( $links, $settings_link );
+  		return $links;
 	}
 
 	public static function load_menu() {
@@ -252,11 +250,11 @@ class Akismet_Admin {
 
 		if ( $key_status == 'valid' ) {
 			$akismet_user = self::get_akismet_user( $api_key );
-			
-			if ( $akismet_user ) {				
+
+			if ( $akismet_user ) {
 				if ( in_array( $akismet_user->status, array( 'active', 'active-dunning', 'no-sub' ) ) )
 					update_option( 'wordpress_api_key', $api_key );
-				
+
 				if (  $akismet_user->status == 'active' )
 					self::$notices['status'] = 'new-key-valid';
 				else
@@ -368,7 +366,7 @@ class Akismet_Admin {
 			add_comment_meta( $c['comment_ID'], 'akismet_rechecking', true );
 
 			$response = Akismet::http_post( Akismet::build_query( $c ), 'comment-check' );
-			
+
 			if ( 'true' == $response[1] ) {
 				wp_set_comment_status( $c['comment_ID'], 'spam' );
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'true' );
@@ -474,7 +472,7 @@ class Akismet_Admin {
 
 		$show_user_comments = apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') );
 		$show_user_comments = $show_user_comments === 'false' ? false : $show_user_comments; //option used to be saved as 'false' / 'true'
-		
+
 		if ( $show_user_comments ) {
 			$comment_count = Akismet::get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
 			$comment_count = intval( $comment_count );
@@ -545,16 +543,16 @@ class Akismet_Admin {
 	// Check connectivity between the WordPress blog and Akismet's servers.
 	// Returns an associative array of server IP addresses, where the key is the IP address, and value is true (available) or false (unable to connect).
 	public static function check_server_ip_connectivity() {
-		
+
 		$servers = $ips = array();
 
 		// Some web hosts may disable this function
-		if ( function_exists('gethostbynamel') ) {	
-			
+		if ( function_exists('gethostbynamel') ) {
+
 			$ips = gethostbynamel( 'rest.akismet.com' );
 			if ( $ips && is_array($ips) && count($ips) ) {
 				$api_key = Akismet::get_api_key();
-				
+
 				foreach ( $ips as $ip ) {
 					$response = Akismet::verify_key( $api_key, $ip );
 					// even if the key is invalid, at least we know we have connectivity
@@ -565,13 +563,13 @@ class Akismet_Admin {
 				}
 			}
 		}
-		
+
 		return $servers;
 	}
-	
+
 	// Simpler connectivity check
 	public static function check_server_connectivity($cache_timeout = 86400) {
-		
+
 		$debug = array();
 		$debug[ 'PHP_VERSION' ]         = PHP_VERSION;
 		$debug[ 'WORDPRESS_VERSION' ]   = $GLOBALS['wp_version'];
@@ -579,29 +577,29 @@ class Akismet_Admin {
 		$debug[ 'AKISMET__PLUGIN_DIR' ] = AKISMET__PLUGIN_DIR;
 		$debug[ 'SITE_URL' ]            = site_url();
 		$debug[ 'HOME_URL' ]            = home_url();
-		
+
 		$servers = get_option('akismet_available_servers');
 		if ( (time() - get_option('akismet_connectivity_time') < $cache_timeout) && $servers !== false ) {
 			$servers = self::check_server_ip_connectivity();
 			update_option('akismet_available_servers', $servers);
 			update_option('akismet_connectivity_time', time());
 		}
-			
+
 		$response = wp_remote_get( 'http://rest.akismet.com/1.1/test' );
-		
+
 		$debug[ 'gethostbynamel' ]  = function_exists('gethostbynamel') ? 'exists' : 'not here';
 		$debug[ 'Servers' ]         = $servers;
 		$debug[ 'Test Connection' ] = $response;
-		
+
 		Akismet::log( $debug );
-		
+
 		if ( $response && 'connected' == wp_remote_retrieve_body( $response ) )
 			return true;
-		
+
 		return false;
 	}
 
-	// Check the server connectivity and store the available servers in an option. 
+	// Check the server connectivity and store the available servers in an option.
 	public static function get_server_connectivity($cache_timeout = 86400) {
 		return self::check_server_connectivity( $cache_timeout );
 	}
@@ -624,7 +622,7 @@ class Akismet_Admin {
 
 		return $url;
 	}
-	
+
 	public static function get_akismet_user( $api_key ) {
 		$akismet_user = Akismet::http_post( Akismet::build_query( array( 'key' => $api_key ) ), 'get-subscription' );
 
@@ -632,10 +630,10 @@ class Akismet_Admin {
 			$akismet_user = json_decode( $akismet_user[1] );
 		else
 			$akismet_user = false;
-			
+
 		return $akismet_user;
 	}
-	
+
 	public static function get_stats( $api_key ) {
 		$stat_totals = array();
 
@@ -648,7 +646,7 @@ class Akismet_Admin {
 		}
 		return $stat_totals;
 	}
-	
+
 	public static function verify_wpcom_key( $api_key, $user_id, $token = '' ) {
 		$akismet_account = Akismet::http_post( Akismet::build_query( array(
 			'user_id'          => $user_id,
@@ -661,7 +659,7 @@ class Akismet_Admin {
 			$akismet_account = json_decode( $akismet_account[1] );
 
 		Akismet::log( compact( 'akismet_account' ) );
-		
+
 		return $akismet_account;
 	}
 
@@ -711,25 +709,25 @@ class Akismet_Admin {
 			self::display_configuration_page();
 			return;
 		}
-		
+
 		//the user can choose to auto connect their API key by clicking a button on the akismet done page
 		//if jetpack, get verified api key by using connected wpcom user id
-		//if no jetpack, get verified api key by using an akismet token	
-		
+		//if no jetpack, get verified api key by using an akismet token
+
 		$akismet_user = false;
-		
+
 		if ( isset( $_GET['token'] ) && preg_match('/^(\d+)-[0-9a-f]{20}$/', $_GET['token'] ) )
 			$akismet_user = self::verify_wpcom_key( '', '', $_GET['token'] );
 		elseif ( $jetpack_user = self::get_jetpack_user() )
 			$akismet_user = self::verify_wpcom_key( $jetpack_user['api_key'], $jetpack_user['user_id'] );
-			
+
 		if ( isset( $_GET['action'] ) ) {
 			if ( $_GET['action'] == 'save-key' ) {
 				if ( is_object( $akismet_user ) ) {
 					self::save_key( $akismet_user->api_key );
 					self::display_notice();
 					self::display_configuration_page();
-					return;				
+					return;
 				}
 			}
 		}
@@ -749,7 +747,7 @@ class Akismet_Admin {
 		$api_key      = Akismet::get_api_key();
 		$akismet_user = self::get_akismet_user( $api_key );
 		$stat_totals  = self::get_stats( $api_key );
-		
+
 		// If unset, create the new strictness option using the old discard option to determine its default
        	if ( get_option( 'akismet_strictness' ) === false )
         	add_option( 'akismet_strictness', (get_option('akismet_discard_month') === 'true' ? '1' : '0') );
@@ -776,13 +774,13 @@ class Akismet_Admin {
 
 				Akismet::view( 'notice', array( 'type' => 'active-notice', 'time_saved' => $time_saved ) );
 			}
-			
+
 			if ( !empty( $akismet_user->limit_reached ) && in_array( $akismet_user->limit_reached, array( 'yellow', 'red' ) ) ) {
 				Akismet::view( 'notice', array( 'type' => 'limit-reached', 'level' => $akismet_user->limit_reached ) );
 			}
 		}
-		
-		if ( !isset( self::$notices['status'] ) && in_array( $akismet_user->status, array( 'cancelled', 'suspended', 'missing', 'no-sub' ) ) )	
+
+		if ( !isset( self::$notices['status'] ) && in_array( $akismet_user->status, array( 'cancelled', 'suspended', 'missing', 'no-sub' ) ) )
 			Akismet::view( 'notice', array( 'type' => $akismet_user->status ) );
 
 		Akismet::log( compact( 'stat_totals', 'akismet_user' ) );
@@ -843,7 +841,7 @@ class Akismet_Admin {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Some commentmeta isn't useful in an export file. Suppress it (when supported).
 	 *
@@ -856,7 +854,7 @@ class Akismet_Admin {
 		if ( in_array( $key, array( 'akismet_as_submitted', 'akismet_rechecking', 'akismet_delayed_moderation_email' ) ) ) {
 			return true;
 		}
-		
+
 		return $exclude;
 	}
 }

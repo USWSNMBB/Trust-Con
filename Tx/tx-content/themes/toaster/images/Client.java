@@ -15,7 +15,6 @@ class Client
 
 
       ObjectInputStream is=new ObjectInputStream (ss.getInputStream());
-      ObjectOutputStream os=new ObjectOutputStream(ss.getOutputStream());
 
       String msg="";
       do
