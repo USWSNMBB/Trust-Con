@@ -19,7 +19,6 @@
  * @param mixed $data The data to add to the cache store
  * @param string $group The group to add the cache to
  * @param int $expire When the cache data should be expired
- * @return bool False if cache key and group already exist, true on success
  */
 function wp_cache_add( $key, $data, $group = '', $expire = 0 ) {
 	global $wp_object_cache;

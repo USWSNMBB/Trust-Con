@@ -28,7 +28,6 @@ function get_category_link( $category ) {
 }
 
 /**
- * Retrieve category parents with separator.
  *
  * @since 1.2.0
  *

@@ -22,7 +22,6 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 
 	if ( empty($bookmark) ) {
 		if ( isset($GLOBALS['link']) )
-			$_bookmark = & $GLOBALS['link'];
 		else
 			$_bookmark = null;
 	} elseif ( is_object($bookmark) ) {
